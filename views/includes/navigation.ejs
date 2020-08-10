@@ -1,0 +1,38 @@
+<nav class="navbar navbar-inverse">
+  <a class="navbar-brand" href="/">MTShop</a>
+  <ul class="nav navbar-nav">
+    <li>
+      <a href="/products">Products</a>
+    </li>
+    <% if (isAuthenticated) { %>
+      <li>
+        <a href="/shop/cart">Cart</a>
+      </li>
+      <li>
+        <a href="/shop/order">Order</a>
+      </li>
+      <li>
+        <a href="#">||</a>
+      </li>
+      <li>
+        <a href="/admin/products">AdminProducts</a>
+      </li>
+      <li>
+        <a href="/admin/add-product">AddProduct</a>
+      </li>
+      <% } %>
+  </ul>
+
+  
+  <form action="/logout" method="POST" class="navbar-form pull-right">
+    <% if (!isAuthenticated) { %>
+    <a href="/login" class="navbar-link">Login</a>
+    &nbsp;&nbsp;&nbsp;
+    <a href="/signup" class="navbar-link">Sign Up</a>
+    <% } else { %>
+      <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+    <button type="submit" class="navbar-link">Logout</button>
+    <% } %>
+  </form>
+
+</nav>

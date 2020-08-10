@@ -1,0 +1,26 @@
+<%- include('../includes/header.ejs') %> <%-
+include('../includes/navigation.ejs') %>
+
+<div class="panel panel-primary">
+    <div class="panel-heading">
+        <h3 class="panel-title">LOGIN</h3>
+        <% if (errorMessage) { %>
+          <div class="alert alert-warning">
+            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+            <strong><%= errorMessage %> </strong> 
+        </div>
+        <% } %>
+      </div>
+  <div class="panel-body">
+    <form action="/reset" method="POST">
+      <div class="form-group">
+        <label for="">UserName</label>
+        <input type="text" name="username" />
+      </div>
+      <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+      <button type="submit" class="btn btn-primary">Reset</button>
+    </form>
+  </div>
+</div>
+
+<%- include('../includes/footer.ejs') %>

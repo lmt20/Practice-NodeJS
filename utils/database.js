@@ -1,0 +1,26 @@
+const mongodb = require('mongodb');
+
+const MongoClient = mongodb.MongoClient;
+
+let _db;
+const mongoConnect = (callback) => {
+    
+    MongoClient.connect("mongodb+srv://lmtruong1512:lmtruong1512@cluster0.lhnzg.mongodb.net/shop?retryWrites=true&w=majority")
+        .then( client => {
+            console.log("Connected!");
+            _db = client.db();
+            callback();
+
+        }).catch((err) => {
+            console.log(err);
+        });
+}
+const getDb = () => {
+    if(_db){
+        return _db;
+    }
+    throw "Can't connect to database!"
+}
+
+exports.mongoConnect = mongoConnect;
+exports.getDb = getDb;

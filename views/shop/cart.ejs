@@ -1,0 +1,53 @@
+<%- include('../includes/header.ejs') %> <%-
+include('../includes/navigation.ejs') %>
+
+<div class="panel panel-success">
+  <div class="panel-heading">
+    <h3 class="panel-title">Your Cart</h3>
+  </div>
+  <div class="panel-body">
+    <div class="container">
+        <% detailItems.forEach(item => { %>
+          <div class="row">
+            <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2">
+              <div class="thumbnail">
+                <img
+                  src="<%= item.productId.imgUrl %> "
+                  alt="<%= item.productId.title %>"
+                  style="width: 100%;"
+                />
+                <div class="caption">
+                  <h3><%= item.productId.title %></h3>
+
+                </div>
+              </div>
+            </div>
+            
+            
+            <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3">
+              <h5><%= item.productId.price %></h5>
+            </div>
+            <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3">
+                <h5>Quantity: <%= item.quantity %> </h5>
+            </div>
+            <div class="col-xs-3 col-sm-3 col-md-3 col-lg-3">
+              <form action="/shop/delete-item-in-cart" method="POST" >
+                <input type="hidden" name="productId" value=<%= item.productId._id %>>
+                <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                <button type="submit" class="btn btn-success">Delete</button>
+              </form>
+          </div>
+        
+      </div>
+        <% }) %>
+    </div>
+    
+    <form action="/shop/add-order" method="POST">
+      <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+      <button type="submit" class="btn btn-primary">Order Now</button>
+    </form>
+    
+  </div>
+</div>
+
+<%- include('../includes/footer.ejs') %>

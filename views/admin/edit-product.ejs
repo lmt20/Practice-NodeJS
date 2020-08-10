@@ -1,0 +1,31 @@
+<%- include('../includes/header.ejs') %>
+<%- include('../includes/navigation.ejs') %>
+
+
+<div class="panel panel-primary">
+      <div class="panel-heading">
+            <h3 class="panel-title"><%= title %> </h3>
+      </div>
+      <div class="panel-body">
+            
+            <form action="/admin/edit-product" method="POST" role="form">
+                <div class="form-group">
+                    <label for="">Title</label>
+                    <input type="text" name="title" value=<%= product.title %>>
+                    <label for="">Image Url</label>
+                    <input type="text" name="imgUrl" value=<%= product.imgUrl %>>
+                    <label for="">Price</label>
+                    <input type="text" name="price" value=<%= product.price %>>
+                    <label for="">Description</label>
+                    <input type="text" name="description" value=<%= product.description %>>
+                    <input type="hidden" name="productId" value=<%= product._id %>>
+                </div>
+                <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                <button type="submit" class="btn btn-primary">Submit</button>
+            </form>
+            
+      </div>
+</div>
+
+
+<%- include('../includes/footer.ejs') %>

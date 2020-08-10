@@ -1,0 +1,44 @@
+<%- include('../includes/header.ejs') %> <%-
+include('../includes/navigation.ejs') %>
+
+<div class="panel panel-success">
+  <div class="panel-heading">
+    <h3 class="panel-title">Product</h3>
+  </div>
+  <div class="panel-body">
+    <div class="container">
+      <div class="row">
+        <div class="col-xs-2 col-sm-2 col-md-2 col-lg-2">
+          <a href="/admin/product/<%= product._id %>">
+            <div class="thumbnail">
+              <img
+                src="<%= product.imgUrl %> "
+                alt="<%= product.title %>"
+                style="width: 100%;"
+              />
+            </div>
+          </a>
+        </div>
+        <div class="col-xs-8 col-sm-8 col-md-8 col-lg-8">
+          <div class="caption">
+            <h3><%= product.title %></h3>
+            <h3><%= product.price %></h3>
+            <% if (isCreatedUser) { %>
+                <form action="/admin/edit-product/<%= product._id %>" method="GET" >
+                  <button type="submit" class="btn btn-warning">Edit</button>
+                </form>
+                <form action="/admin/delete-product" method="POST" >
+                  <input type="hidden" name="productId" value=<%= product._id %>>
+                  <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                  <button type="submit" class="btn btn-danger">Delete</button>
+                </form>
+            <% } %>
+            <p><%= product.description %></p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<%- include('../includes/footer.ejs') %>
