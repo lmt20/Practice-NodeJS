@@ -13,7 +13,7 @@ include('../includes/navigation.ejs') %>
           <a href="/admin/product/<%= product._id %>">
             <div class="thumbnail">
               <img
-                src="<%= product.imgUrl %> "
+                src="/<%=product.image %>"
                 alt="<%= product.title %>"
                 style="width: 100%;"
               />

@@ -1,11 +1,10 @@
 const Product = require('../models/product');
 
 exports.getProducts = (req, res, next) => {
-    Product.find({userId: req.user._id})
+    Product.find({ userId: req.user._id })
         .then((products) => {
             res.render('admin/products', {
                 title: 'Product List',
-                path: 'admin/products',
                 products: products
             })
 
@@ -21,7 +20,6 @@ exports.getProductById = (req, res, next) => {
             const isCreatedUser = product.userId.toString() === req.user._id.toString();
             res.render('admin/product', {
                 title: 'Product',
-                path: 'admin/product',
                 isCreatedUser: isCreatedUser,
                 product: product
             })
@@ -33,22 +31,24 @@ exports.getProductById = (req, res, next) => {
 exports.getAddProduct = (req, res, next) => {
     res.render('admin/add-product', {
         title: 'Add Product',
-        path: 'admin/add-product',
     })
 }
 
 exports.postAddProduct = (req, res, next) => {
     const title = req.body.title;
-    const imgUrl = req.body.imgUrl;
+    const image = req.file;
     const price = req.body.price;
     const description = req.body.description;
+    if(!image){
+        throw new Error("Wrong type of file!");
+    }
     const product = new Product({
         title: title,
-        imgUrl: imgUrl,
+        image: image.path,
         price: price,
         description: description,
         userId: req.user._id
-    });    
+    });
     product.save()
         .then((result) => {
             console.log("created product!");
@@ -60,7 +60,7 @@ exports.postAddProduct = (req, res, next) => {
 
 exports.postDeleteProduct = (req, res, next) => {
     const productId = req.body.productId;
-    Product.findByIdAndDelete(productId)    
+    Product.findByIdAndDelete(productId)
         .then(result => {
             res.redirect('/admin/products');
         })
@@ -75,7 +75,6 @@ exports.getEditProduct = (req, res, next) => {
         .then(product => {
             res.render('admin/edit-product', {
                 title: 'Edit Product',
-                path: 'admin/edit-product',
                 product: product
             })
         })
@@ -87,18 +86,18 @@ exports.getEditProduct = (req, res, next) => {
 exports.postEditProduct = (req, res, next) => {
     const productId = req.body.productId;
     const title = req.body.title;
-    const imgUrl = req.body.imgUrl;
+    const image = req.file;
     const price = req.body.price;
     const description = req.body.description;
     return Product.findById(productId)
         .then(product => {
             product.title = title;
-            product.imgUrl = imgUrl;
+            product.image = image.path;
             product.price = price;
             product.description = description;
             product.save();
         })
-        .then( () => {
+        .then(() => {
             res.redirect('/admin/products');
         })
         .catch(err => {

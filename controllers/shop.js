@@ -1,6 +1,10 @@
 const Product = require('../models/product');
 const User = require('../models/user');
 const Order = require('../models/order');
+const user = require('../models/user');
+const fs = require('fs');
+const path = require('path');
+const PDFDocument = require('pdfkit');
 
 exports.getProducts = (req, res, next) => {
     Product.find()
@@ -65,12 +69,13 @@ exports.getOrder = (req, res, next) => {
 }
 
 exports.postAddOrder = (req, res, next) => {
+    let order;
     req.user.populate('cart.items.productId')
         .execPopulate()
         .then(user => {
-            const order = new Order({
+            order = new Order({
                 items: user.cart.items.map(item => {
-                    return { product: {...item.productId._doc}, quantity: item.quantity };
+                    return { product: { ...item.productId._doc }, quantity: item.quantity };
                 }),
                 userId: req.user._id,
             })
@@ -87,5 +92,53 @@ exports.postAddOrder = (req, res, next) => {
         .catch(err => {
             console.log(err);
         })
+}
 
+exports.getInvoice = (req, res, next) => {
+    const orderId = req.params.orderId;
+    Order.findById(orderId)
+        .then(order => {
+            if (!order) {
+                return next(new Error("Cannot find this order!"));
+            }
+            if (order.userId.toString() !== req.user._id.toString()) {
+                return next(new Error("Cannot access this order!"));
+            }
+            const fileName = path.join('data', 'invoices', 'invoice_' + orderId + '.pdf');
+            // generate invoice file(pdf)
+            const docInvoice = new PDFDocument();
+            docInvoice.fontSize(20).text("Invoice:", {
+                align: 'center',
+                underline: true,
+            });
+            docInvoice.fontSize(16).text('Order Id: ' + order._id);
+            docInvoice.fontSize(16).text('List of products:');
+            let totalPrice = 0;
+            order.items.forEach(item => {
+                totalPrice += item.product.price * item.quantity;
+                docInvoice.fontSize(14).text(item.product._id + ": " + item.product.price + " * " + item.quantity);
+            })
+            docInvoice.fontSize(16).text('Total Price: ' + totalPrice);
+            docInvoice.end();
+            docInvoice.pipe(fs.createWriteStream(fileName));
+
+            //Send file to client using stream -> send mutiple trunk data
+            res.setHeader('Content-Type', 'application/pdf');
+            res.setHeader('Content-Disposition', 'inline; filename="' + fileName + '"');
+            docInvoice.pipe(res);
+
+            //Send file to client when fetched completely to memory
+            // const invoiceFile = fs.readFile(fileName, (err, data) => {
+            //     if (err) {
+            //         return next(err);
+            //     }
+            //     console.log(data);
+            //     res.setHeader('Content-Type', 'application/pdf');
+            //     res.setHeader('Content-Disposition', 'attachment; filename="' + fileName + '"');
+            //     res.send(data);
+            // })
+        })
+        .catch(err => {
+            return next(err);
+        })
 }
