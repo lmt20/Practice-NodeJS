@@ -1,7 +1,7 @@
 const express = require('express');
 const app = express();
 const path = require('path');
-const port = 1313;
+const port = 3030;
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const session = require('express-session');
@@ -51,7 +51,6 @@ app.use(
         store: store,
         resave: true,
         saveUninitialized: true
-
     })
 );
 
