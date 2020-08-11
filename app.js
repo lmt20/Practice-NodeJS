@@ -16,6 +16,7 @@ const store = new MongoDBStore({
 })
 
 const authRoutes = require('./routes/auth.js');
+
 const shopRoutes = require('./routes/shop.js');
 const adminRoutes = require('./routes/admin.js');
 const errorController = require('./controllers/error.js');
@@ -56,10 +57,12 @@ app.use((req, res, next) => {
     next();
 })
 app.use(authRoutes);
+
 app.use(shopRoutes);
+
 app.use('/admin', adminRoutes);
 app.use(errorController.get404); 
-
+app.use(errorController.get500);
 
 mongoose.connect("mongodb+srv://lmtruong1512:lmtruong1512@cluster0.lhnzg.mongodb.net/shop_mongoose?retryWrites=true&w=majority")
     .then((result) => {
