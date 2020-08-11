@@ -8,12 +8,12 @@
       </div>
       <div class="panel-body">
             
-            <form action="/admin/edit-product" method="POST" role="form">
+            <form action="/admin/edit-product" method="POST" role="form" enctype="multipart/form-data">
                 <div class="form-group">
                     <label for="">Title</label>
                     <input type="text" name="title" value=<%= product.title %>>
-                    <label for="">Image Url</label>
-                    <input type="text" name="imgUrl" value=<%= product.imgUrl %>>
+                    <label for="">Image File</label>
+                    <input type="file" name="image" value=<%= product.image %>>
                     <label for="">Price</label>
                     <input type="text" name="price" value=<%= product.price %>>
                     <label for="">Description</label>

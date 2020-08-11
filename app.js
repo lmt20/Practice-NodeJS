@@ -1,13 +1,30 @@
 const express = require('express');
 const app = express();
-const port = 9898;
+const path = require('path');
+const port = 1313;
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const session = require('express-session');
 const MongoDBStore = require('connect-mongodb-session')(session);
 const csrf = require('csurf');
 const flash = require('connect-flash');
-
+const multer = require('multer');
+const storage = multer.diskStorage({
+    destination: function(req, file, cb){
+        cb(null, 'images');
+    },
+    filename: function(req, file, cb){
+        cb(null, new Date().toISOString()+"_"+file.originalname);
+    }
+    
+})
+const fileFilter = (req, file, cb) => {
+    if(file.mimetype === 'image/png' || file.mimetype === 'image/jpg' || file.mimetype === 'image/jpeg'){
+        cb(null, true);
+    }
+    else cb(null, false);
+}
+const upload = multer({storage: storage, fileFilter: fileFilter});
 
 const MONGODB_URI = "mongodb+srv://lmtruong1512:lmtruong1512@cluster0.lhnzg.mongodb.net/shop_mongoose";
 const store = new MongoDBStore({
@@ -26,6 +43,7 @@ const csrfProtection = csrf();
 app.set('view engine', 'ejs');
 app.set('views', 'views');
 app.use(express.static('public'));
+app.use('/images', express.static('images'));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(
     session({
@@ -36,6 +54,8 @@ app.use(
 
     })
 );
+
+app.use(upload.single('image'));
 app.use(csrfProtection);
 app.use(flash());
 app.use((req, res, next) => {
