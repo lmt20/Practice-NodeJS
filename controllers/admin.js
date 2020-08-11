@@ -1,9 +1,6 @@
 const Product = require('../models/product');
 
 exports.getProducts = (req, res, next) => {
-    if(!req.session.isLoggedIn){
-        return res.redirect('/');
-    }
     Product.find({userId: req.user._id})
         .then((products) => {
             res.render('admin/products', {
@@ -18,9 +15,6 @@ exports.getProducts = (req, res, next) => {
 }
 
 exports.getProductById = (req, res, next) => {
-    if(!req.session.isLoggedIn){
-        return res.redirect('/');
-    }
     const productId = req.params.productId;
     Product.findById(productId)
         .then((product) => {
@@ -37,9 +31,6 @@ exports.getProductById = (req, res, next) => {
 }
 
 exports.getAddProduct = (req, res, next) => {
-    if(!req.session.isLoggedIn){
-        return res.redirect('/');
-    }
     res.render('admin/add-product', {
         title: 'Add Product',
         path: 'admin/add-product',
@@ -79,9 +70,6 @@ exports.postDeleteProduct = (req, res, next) => {
 }
 
 exports.getEditProduct = (req, res, next) => {
-    if(!req.session.isLoggedIn){
-        return res.redirect('/');
-    }
     const productId = req.params.productId;
     Product.findById(productId)
         .then(product => {
