@@ -16,9 +16,6 @@ exports.getProducts = (req, res, next) => {
 
 }
 exports.getCart = (req, res, next) => {
-    if(!req.session.isLoggedIn){
-        return res.redirect('/');
-    }
     req.user.populate('cart.items.productId')
         .execPopulate()
         .then(user => {
@@ -56,9 +53,6 @@ exports.postDeleteItemInCart = (req, res, next) => {
 }
 
 exports.getOrder = (req, res, next) => {
-    if(!req.session.isLoggedIn){
-        return res.redirect('/');
-    }
     Order.find({ userId: req.user })
         .then(orders => {
             res.render('shop/order', {
