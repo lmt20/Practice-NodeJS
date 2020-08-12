@@ -1,16 +1,29 @@
 const Product = require('../models/product');
+const CONST = require('../utils/constant');
 
 exports.getProducts = (req, res, next) => {
-    Product.find({ userId: req.user._id })
-        .then((products) => {
-            res.render('admin/products', {
-                title: 'Product List',
-                products: products
+    const numberProductsPerPage = CONST.NUMBER_PRODUCTS_PER_PAGE;
+    const pageIndex = +req.query.page || 1;
+    Product.count()
+        .then(numDocument => {
+            return Product.find({ userId: req.user._id })
+            .skip((pageIndex - 1) * numberProductsPerPage)
+            .limit(numberProductsPerPage)
+            .then((products) => {
+                return res.render('shop/products', {
+                    title: 'Product List',
+                    products: products,
+                    pageIndex: pageIndex,
+                    lastPageIndex: Math.ceil(numDocument / numberProductsPerPage),
+                    hasPreviousPage: pageIndex > 1,
+                    hasNextPage: pageIndex < Math.ceil(numDocument / numberProductsPerPage),
+                });
             })
-
-        }).catch((err) => {
+        })
+        .catch (err => {
             console.log(err);
-        });
+            return next(err);
+        })
 }
 
 exports.getProductById = (req, res, next) => {

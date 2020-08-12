@@ -1,0 +1,27 @@
+<ul class="pagination">
+  <% if (pageIndex > 1) { %>
+    <li><a href="?page=<%= pageIndex - 1 %>">&laquo;</a></li>
+  <% } %>
+  <% if (pageIndex !== 1) { %> 
+  <li><a href="?page=1">1</a></li>
+  <% } %> 
+  <% if (pageIndex > 3) { %>
+  <li><a href="#">...</a></li>
+  <% } %> 
+  <% if (pageIndex > 2) { %>
+  <li><a href="?page=<%= pageIndex - 1 %>"><%= pageIndex - 1 %></a></li>
+  <% } %>
+  <li class="active"><a href="?page=<%= pageIndex %>" ><%= pageIndex %></a></li>
+  <% if (pageIndex < lastPageIndex - 1) { %>
+  <li><a href="?page=<%= pageIndex + 1 %>"><%= pageIndex + 1 %></a></li>
+  <% } %>
+  <% if (pageIndex < lastPageIndex - 2) { %>
+    <li><a href="#">...</a></li>
+  <% } %>
+  <% if (pageIndex !== lastPageIndex) { %>
+  <li><a href="?page=<%= lastPageIndex %>"><%= lastPageIndex %></a></li>
+  <% } %>
+  <% if (pageIndex < lastPageIndex) { %>
+    <li><a href="?page=<%= pageIndex + 1 %>">&raquo;</a></li>
+  <% } %>
+</ul>

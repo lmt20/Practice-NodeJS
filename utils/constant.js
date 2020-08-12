@@ -1,0 +1,1 @@
+exports.NUMBER_PRODUCTS_PER_PAGE = 2;

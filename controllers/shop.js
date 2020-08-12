@@ -5,20 +5,33 @@ const user = require('../models/user');
 const fs = require('fs');
 const path = require('path');
 const PDFDocument = require('pdfkit');
+const CONST = require('../utils/constant');
 
 exports.getProducts = (req, res, next) => {
-    Product.find()
-        .then((products) => {
-            res.render('shop/products', {
-                products: products,
-                title: 'Product List',
-                path: '/shop/products'
-            });
-        }).catch((err) => {
+    const numberProductsPerPage = CONST.NUMBER_PRODUCTS_PER_PAGE;
+    const pageIndex = +req.query.page || 1;
+    Product.count()
+        .then(numDocument => {
+            return Product.find()
+            .skip((pageIndex - 1) * numberProductsPerPage)
+            .limit(numberProductsPerPage)
+            .then((products) => {
+                return res.render('shop/products', {
+                    title: 'Product List',
+                    products: products,
+                    pageIndex: pageIndex,
+                    lastPageIndex: Math.ceil(numDocument / numberProductsPerPage),
+                    hasPreviousPage: pageIndex > 1,
+                    hasNextPage: pageIndex < Math.ceil(numDocument / numberProductsPerPage),
+                });
+            })
+        })
+        .catch (err => {
             console.log(err);
-        });
-
+            return next(err);
+        })
 }
+    
 exports.getCart = (req, res, next) => {
     req.user.populate('cart.items.productId')
         .execPopulate()
